@@ -3,6 +3,8 @@
 import {backup} from '../models';
 import {config} from '../models';
 
+export function CancelBackup():Promise<string>;
+
 export function GetAvailableDrives():Promise<Array<string>>;
 
 export function GetBackupStatus():Promise<backup.BackupStatus>;

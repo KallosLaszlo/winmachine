@@ -3,6 +3,7 @@ import {
   GetBackupStatus,
   GetSnapshots,
   RunBackupNow,
+  CancelBackup,
   GetDiskInfo,
   GetConfig,
   GetNextBackup,
@@ -78,15 +79,31 @@ export default function Dashboard() {
     RunBackupNow().then(refresh);
   };
 
+  const handleCancelBackup = async () => {
+    console.log('Stop Backup clicked');
+    const result = await CancelBackup();
+    console.log('CancelBackup result:', result);
+  };
+
   const latestSnapshot = snapshots.length > 0 ? snapshots[0] : null;
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1 className="page-title">Dashboard</h1>
-        <button className="primary" onClick={handleBackupNow} disabled={status?.running || !configured}>
-          {status?.running ? 'Backing up...' : 'Back Up Now'}
-        </button>
+        {status?.running ? (
+          <button
+            className="primary"
+            onClick={handleCancelBackup}
+            style={{ background: '#e8912d', color: '#fff' }}
+          >
+            Stop Backup...
+          </button>
+        ) : (
+          <button className="primary" onClick={handleBackupNow} disabled={!configured}>
+            Back Up Now
+          </button>
+        )}
       </div>
 
       {!configured && (

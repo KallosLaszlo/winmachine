@@ -187,8 +187,8 @@ func (a *App) GetSnapshots() ([]*backup.SnapshotMeta, error) {
 			return nil, fmt.Errorf("mount SMB: %w", err)
 		}
 	}
-	// Clean empty snapshots before listing
-	backup.CleanEmptySnapshots(a.effectiveTargetDir())
+	// Clean incomplete snapshots before listing
+	backup.CleanIncompleteSnapshots(a.effectiveTargetDir())
 	return backup.ListSnapshots(a.effectiveTargetDir())
 }
 
@@ -203,6 +203,12 @@ func (a *App) GetSnapshotFiles(snapshotID, subPath string) ([]backup.FileInfo, e
 
 func (a *App) RunBackupNow() error {
 	return a.scheduler.RunNow()
+}
+
+func (a *App) CancelBackup() string {
+	log.Println("CancelBackup() called from frontend")
+	a.engine.Cancel()
+	return "cancel requested"
 }
 
 func (a *App) RestoreFile(snapshotID, relPath, destPath string) error {

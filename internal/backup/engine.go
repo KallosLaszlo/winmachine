@@ -1,10 +1,13 @@
 package backup
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"winmachine/internal/config"
@@ -24,9 +27,12 @@ type BackupStatus struct {
 }
 
 type Engine struct {
-	cfg    *config.Config
-	status BackupStatus
-	smbMgr *smb.MountManager
+	cfg       *config.Config
+	status    BackupStatus
+	smbMgr    *smb.MountManager
+	mu        sync.Mutex
+	cancel    context.CancelFunc
+	cancelled atomic.Bool
 }
 
 func NewEngine(cfg *config.Config, smbMgr *smb.MountManager) *Engine {
@@ -34,16 +40,59 @@ func NewEngine(cfg *config.Config, smbMgr *smb.MountManager) *Engine {
 }
 
 func (e *Engine) Status() BackupStatus {
+	e.mu.Lock()
+	defer e.mu.Unlock()
 	return e.status
 }
 
+func (e *Engine) Cancel() {
+	log.Println("Cancel() called")
+	e.cancelled.Store(true)
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if e.cancel != nil {
+		e.cancel()
+		log.Println("context cancel function invoked")
+	} else {
+		log.Println("cancel function was nil")
+	}
+}
+
 func (e *Engine) Run() error {
+	e.mu.Lock()
 	if e.status.Running {
+		e.mu.Unlock()
 		return fmt.Errorf("backup already in progress")
 	}
-
+	e.cancelled.Store(false)
+	ctx, cancel := context.WithCancel(context.Background())
+	e.cancel = cancel
 	e.status = BackupStatus{Running: true}
-	defer func() { e.status.Running = false }()
+	e.mu.Unlock()
+
+	defer func() {
+		cancel()
+		e.mu.Lock()
+		// Only clear running if not already cleared by cancel
+		if e.status.Running {
+			e.status.Running = false
+			e.cancel = nil
+		}
+		e.mu.Unlock()
+	}()
+
+	// Helper to check cancellation from both context and atomic flag
+	isCancelled := func() bool {
+		if e.cancelled.Load() {
+			return true
+		}
+		select {
+		case <-ctx.Done():
+			return true
+		default:
+			return false
+		}
+	}
 
 	targetDir := e.cfg.TargetDir
 
@@ -95,6 +144,19 @@ func (e *Engine) Run() error {
 	fsutil.ProtectDir(SnapshotsRoot(targetDir))
 
 	startTime := time.Now()
+
+	// Save initial "in-progress" meta so we can detect incomplete backups
+	initialMeta := &SnapshotMeta{
+		ID:         snapID,
+		Status:     "in-progress",
+		Timestamp:  startTime,
+		SourceDirs: e.cfg.SourceDirs,
+		MachineID:  fsutil.MachineID(),
+	}
+	if err := SaveMeta(snapDir, initialMeta); err != nil {
+		log.Printf("warning: save initial snapshot meta: %v", err)
+	}
+
 	var totalFiles int
 	var totalSize, linkedSize, copiedSize int64
 
@@ -116,9 +178,33 @@ func (e *Engine) Run() error {
 			continue
 		}
 
+		// Check cancellation after potentially long Walk
+		if isCancelled() {
+			log.Printf("backup cancelled after walk for snapshot %s", snapID)
+			e.mu.Lock()
+			e.status.Running = false
+			e.status.Error = "backup cancelled"
+			e.status.CurrentFile = ""
+			e.cancel = nil
+			e.mu.Unlock()
+			return fmt.Errorf("backup cancelled")
+		}
+
 		e.status.FilesTotal += len(entries)
 
 		for _, entry := range entries {
+			// Check for cancellation (both context and atomic flag)
+			if isCancelled() {
+				log.Printf("backup cancelled for snapshot %s", snapID)
+				e.mu.Lock()
+				e.status.Running = false
+				e.status.Error = "backup cancelled"
+				e.status.CurrentFile = ""
+				e.cancel = nil
+				e.mu.Unlock()
+				return fmt.Errorf("backup cancelled")
+			}
+
 			destPath := filepath.Join(destBase, entry.RelPath)
 
 			if entry.IsDir {
@@ -148,7 +234,7 @@ func (e *Engine) Run() error {
 			}
 
 			if !linked {
-				if err := fsutil.LinkOrCopy(entry.Path, destPath); err != nil {
+				if err := fsutil.LinkOrCopyCtx(ctx, entry.Path, destPath); err != nil {
 					log.Printf("warning: backup %s: %v", entry.RelPath, err)
 					continue
 				}
@@ -168,8 +254,21 @@ func (e *Engine) Run() error {
 		_ = os.Chtimes(dt.path, dt.modTime, dt.modTime)
 	}
 
+	// Final cancel check before marking as finished
+	if isCancelled() {
+		log.Printf("backup cancelled before finalizing snapshot %s", snapID)
+		e.mu.Lock()
+		e.status.Running = false
+		e.status.Error = "backup cancelled"
+		e.status.CurrentFile = ""
+		e.cancel = nil
+		e.mu.Unlock()
+		return fmt.Errorf("backup cancelled")
+	}
+
 	meta := &SnapshotMeta{
 		ID:         snapID,
+		Status:     "finished",
 		Timestamp:  startTime,
 		SourceDirs: e.cfg.SourceDirs,
 		MachineID:  fsutil.MachineID(),
@@ -192,6 +291,13 @@ func (e *Engine) Run() error {
 	// Prune old snapshots
 	if err := Prune(targetDir, e.cfg.Retention); err != nil {
 		log.Printf("warning: prune: %v", err)
+	}
+
+	// Clean up any incomplete snapshots (cancelled, crashed, etc.)
+	if removed, err := CleanIncompleteSnapshots(targetDir); err != nil {
+		log.Printf("warning: clean incomplete snapshots: %v", err)
+	} else if removed > 0 {
+		log.Printf("cleaned up %d incomplete snapshot(s)", removed)
 	}
 
 	log.Printf("snapshot %s complete: %d files, %d linked, %s copied, took %s",

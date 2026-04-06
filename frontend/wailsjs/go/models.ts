@@ -67,6 +67,7 @@ export namespace backup {
 	}
 	export class SnapshotMeta {
 	    id: string;
+	    status: string;
 	    // Go type: time
 	    timestamp: any;
 	    sourceDirs: string[];
@@ -84,6 +85,7 @@ export namespace backup {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
+	        this.status = source["status"];
 	        this.timestamp = this.convertValues(source["timestamp"], null);
 	        this.sourceDirs = source["sourceDirs"];
 	        this.machineId = source["machineId"];

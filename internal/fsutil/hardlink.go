@@ -1,6 +1,7 @@
 package fsutil
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -8,6 +9,10 @@ import (
 )
 
 func LinkOrCopy(src, dst string) error {
+	return LinkOrCopyCtx(context.Background(), src, dst)
+}
+
+func LinkOrCopyCtx(ctx context.Context, src, dst string) error {
 	if err := os.MkdirAll(filepath.Dir(dst), 0755); err != nil {
 		return fmt.Errorf("create parent dir: %w", err)
 	}
@@ -17,10 +22,10 @@ func LinkOrCopy(src, dst string) error {
 		return nil
 	}
 
-	return copyFile(src, dst)
+	return copyFileCtx(ctx, src, dst)
 }
 
-func copyFile(src, dst string) error {
+func copyFileCtx(ctx context.Context, src, dst string) error {
 	sf, err := os.Open(src)
 	if err != nil {
 		return fmt.Errorf("open source: %w", err)
@@ -42,8 +47,26 @@ func copyFile(src, dst string) error {
 		_ = os.Chtimes(dst, info.ModTime(), info.ModTime())
 	}()
 
-	if _, err := io.Copy(df, sf); err != nil {
-		return fmt.Errorf("copy data: %w", err)
+	// Copy in chunks so cancellation can be checked
+	buf := make([]byte, 256*1024) // 256KB chunks
+	for {
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		default:
+		}
+		n, err := sf.Read(buf)
+		if n > 0 {
+			if _, wErr := df.Write(buf[:n]); wErr != nil {
+				return fmt.Errorf("write data: %w", wErr)
+			}
+		}
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("read data: %w", err)
+		}
 	}
 
 	return df.Sync()

@@ -20,6 +20,7 @@ const (
 
 type SnapshotMeta struct {
 	ID         string    `json:"id"`
+	Status     string    `json:"status"`
 	Timestamp  time.Time `json:"timestamp"`
 	SourceDirs []string  `json:"sourceDirs"`
 	MachineID  string    `json:"machineId"`
@@ -87,10 +88,10 @@ func ListSnapshots(targetDir string) ([]*SnapshotMeta, error) {
 		snapDir := filepath.Join(root, e.Name())
 		meta, err := LoadMeta(snapDir)
 		if err != nil {
-			continue // skip corrupt snapshots
+			continue // skip snapshots without valid meta
 		}
-		if !snapshotHasContent(snapDir) {
-			continue // skip empty snapshots
+		if meta.Status != "finished" {
+			continue // skip incomplete/cancelled snapshots
 		}
 		snapshots = append(snapshots, meta)
 	}
@@ -102,23 +103,9 @@ func ListSnapshots(targetDir string) ([]*SnapshotMeta, error) {
 	return snapshots, nil
 }
 
-// snapshotHasContent returns true if the snapshot directory contains
-// at least one subdirectory (backup content) besides snapshot.json.
-func snapshotHasContent(snapDir string) bool {
-	entries, err := os.ReadDir(snapDir)
-	if err != nil {
-		return false
-	}
-	for _, e := range entries {
-		if e.IsDir() {
-			return true
-		}
-	}
-	return false
-}
-
-// CleanEmptySnapshots removes snapshot directories that have no backup content.
-func CleanEmptySnapshots(targetDir string) (int, error) {
+// CleanIncompleteSnapshots removes snapshot directories that don't have status "finished".
+// This handles: cancelled backups, crashed backups, empty dirs, missing/corrupt meta.
+func CleanIncompleteSnapshots(targetDir string) (int, error) {
 	root := MachineSnapshotsRoot(targetDir)
 	entries, err := os.ReadDir(root)
 	if err != nil {
@@ -133,10 +120,11 @@ func CleanEmptySnapshots(targetDir string) (int, error) {
 			continue
 		}
 		snapDir := filepath.Join(root, e.Name())
-		if !snapshotHasContent(snapDir) {
-			log.Printf("removing empty snapshot: %s", e.Name())
+		meta, err := LoadMeta(snapDir)
+		if err != nil || meta.Status != "finished" {
+			log.Printf("removing incomplete snapshot: %s", e.Name())
 			if err := os.RemoveAll(snapDir); err != nil {
-				log.Printf("warning: remove empty snapshot %s: %v", e.Name(), err)
+				log.Printf("warning: remove incomplete snapshot %s: %v", e.Name(), err)
 			} else {
 				removed++
 			}
