@@ -112,6 +112,10 @@ Config is stored at `%APPDATA%\WinMachine\config.json`:
 | `autoStart` | Register in Windows startup |
 | `excludePatterns` | Glob patterns to skip |
 
+## Known Issues
+
+- **Auto-start depends on exe location** — The auto-start feature saves the current exe path to the Windows Registry. If you move the exe to a different folder, auto-start will fail. To fix, toggle the auto-start option off and on again in Settings.
+
 ## License
 
 MIT
