@@ -41,7 +41,7 @@ Creates incremental snapshots using NTFS hard links for space-efficient backups,
 ## Quick Start
 
 ```bat
-git clone https://github.com/user/WinMachine.git
+git clone https://github.com/KallosLaszlo/winmachine.git
 cd WinMachine
 buildme.bat
 ```
