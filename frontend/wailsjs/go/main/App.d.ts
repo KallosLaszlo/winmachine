@@ -15,6 +15,8 @@ export function GetMachineID():Promise<string>;
 
 export function GetMountedSnapshot():Promise<string>;
 
+export function GetNextBackup():Promise<string>;
+
 export function GetSnapshotFiles(arg1:string,arg2:string):Promise<Array<backup.FileInfo>>;
 
 export function GetSnapshots():Promise<Array<backup.SnapshotMeta>>;

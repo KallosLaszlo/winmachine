@@ -30,6 +30,18 @@ func onReady(cb Callbacks) {
 	systray.SetTitle("WinMachine")
 	systray.SetTooltip("WinMachine — Time Machine for Windows")
 
+	// Double-click tray icon to open window
+	systray.SetOnDClick(func(menu systray.IMenu) {
+		if cb.OnOpenWindow != nil {
+			cb.OnOpenWindow()
+		}
+	})
+
+	// Right-click shows menu
+	systray.SetOnRClick(func(menu systray.IMenu) {
+		menu.ShowMenu()
+	})
+
 	mOpen := systray.AddMenuItem("Open WinMachine", "Open the main window")
 	systray.AddSeparator()
 	mBackup := systray.AddMenuItem("Back Up Now", "Start a backup immediately")

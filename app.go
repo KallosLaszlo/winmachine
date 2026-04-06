@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+	"time"
 
 	wailsRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 
@@ -186,6 +187,8 @@ func (a *App) GetSnapshots() ([]*backup.SnapshotMeta, error) {
 			return nil, fmt.Errorf("mount SMB: %w", err)
 		}
 	}
+	// Clean empty snapshots before listing
+	backup.CleanEmptySnapshots(a.effectiveTargetDir())
 	return backup.ListSnapshots(a.effectiveTargetDir())
 }
 
@@ -213,6 +216,17 @@ func (a *App) RestoreFile(snapshotID, relPath, destPath string) error {
 
 func (a *App) GetBackupStatus() backup.BackupStatus {
 	return a.engine.Status()
+}
+
+func (a *App) GetNextBackup() string {
+	if a.scheduler == nil {
+		return ""
+	}
+	next := a.scheduler.NextRun()
+	if next.IsZero() {
+		return ""
+	}
+	return next.Format(time.RFC3339)
 }
 
 func (a *App) GetDiskInfo(path string) (map[string]interface{}, error) {

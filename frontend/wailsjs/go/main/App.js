@@ -26,6 +26,10 @@ export function GetMountedSnapshot() {
   return window['go']['main']['App']['GetMountedSnapshot']();
 }
 
+export function GetNextBackup() {
+  return window['go']['main']['App']['GetNextBackup']();
+}
+
 export function GetSnapshotFiles(arg1, arg2) {
   return window['go']['main']['App']['GetSnapshotFiles'](arg1, arg2);
 }

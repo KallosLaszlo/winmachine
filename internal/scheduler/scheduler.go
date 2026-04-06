@@ -3,6 +3,7 @@ package scheduler
 import (
 	"log"
 	"sync"
+	"time"
 
 	"github.com/robfig/cron/v3"
 
@@ -86,4 +87,13 @@ func (s *Scheduler) IsPaused() bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.paused
+}
+
+// NextRun returns the next scheduled backup time, or zero if none.
+func (s *Scheduler) NextRun() time.Time {
+	entries := s.cron.Entries()
+	if len(entries) == 0 {
+		return time.Time{}
+	}
+	return entries[0].Next
 }

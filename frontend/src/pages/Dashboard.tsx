@@ -5,6 +5,7 @@ import {
   RunBackupNow,
   GetDiskInfo,
   GetConfig,
+  GetNextBackup,
 } from '../../wailsjs/go/main/App';
 
 interface BackupStatus {
@@ -47,10 +48,12 @@ export default function Dashboard() {
   const [snapshots, setSnapshots] = useState<SnapshotMeta[]>([]);
   const [diskInfo, setDiskInfo] = useState<{ totalBytes: number; freeBytes: number; usedBytes: number } | null>(null);
   const [configured, setConfigured] = useState(false);
+  const [nextBackup, setNextBackup] = useState<string>('');
 
   const refresh = () => {
     GetBackupStatus().then(setStatus);
     GetSnapshots().then((s) => setSnapshots(s || []));
+    GetNextBackup().then((t) => setNextBackup(t || ''));
     GetConfig().then((cfg: any) => {
       const isSmbConfigured = cfg.targetType === 'smb' && cfg.smbTarget?.server && cfg.smbTarget?.share && cfg.smbTarget?.drive;
       const isLocalConfigured = cfg.targetType !== 'smb' && !!cfg.targetDir;
@@ -125,6 +128,12 @@ export default function Dashboard() {
           <div className="stat-label">Last Backup</div>
           <div className="stat-value" style={{ fontSize: 16 }}>
             {latestSnapshot ? formatDate(latestSnapshot.timestamp) : 'Never'}
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">Next Backup</div>
+          <div className="stat-value" style={{ fontSize: 16 }}>
+            {nextBackup ? formatDate(nextBackup) : '—'}
           </div>
         </div>
         <div className="stat-card">

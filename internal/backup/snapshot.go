@@ -3,6 +3,7 @@ package backup
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -83,9 +84,13 @@ func ListSnapshots(targetDir string) ([]*SnapshotMeta, error) {
 		if !e.IsDir() {
 			continue
 		}
-		meta, err := LoadMeta(filepath.Join(root, e.Name()))
+		snapDir := filepath.Join(root, e.Name())
+		meta, err := LoadMeta(snapDir)
 		if err != nil {
 			continue // skip corrupt snapshots
+		}
+		if !snapshotHasContent(snapDir) {
+			continue // skip empty snapshots
 		}
 		snapshots = append(snapshots, meta)
 	}
@@ -95,6 +100,49 @@ func ListSnapshots(targetDir string) ([]*SnapshotMeta, error) {
 	})
 
 	return snapshots, nil
+}
+
+// snapshotHasContent returns true if the snapshot directory contains
+// at least one subdirectory (backup content) besides snapshot.json.
+func snapshotHasContent(snapDir string) bool {
+	entries, err := os.ReadDir(snapDir)
+	if err != nil {
+		return false
+	}
+	for _, e := range entries {
+		if e.IsDir() {
+			return true
+		}
+	}
+	return false
+}
+
+// CleanEmptySnapshots removes snapshot directories that have no backup content.
+func CleanEmptySnapshots(targetDir string) (int, error) {
+	root := MachineSnapshotsRoot(targetDir)
+	entries, err := os.ReadDir(root)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return 0, nil
+		}
+		return 0, err
+	}
+	removed := 0
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		snapDir := filepath.Join(root, e.Name())
+		if !snapshotHasContent(snapDir) {
+			log.Printf("removing empty snapshot: %s", e.Name())
+			if err := os.RemoveAll(snapDir); err != nil {
+				log.Printf("warning: remove empty snapshot %s: %v", e.Name(), err)
+			} else {
+				removed++
+			}
+		}
+	}
+	return removed, nil
 }
 
 func LatestSnapshot(targetDir string) (*SnapshotMeta, error) {

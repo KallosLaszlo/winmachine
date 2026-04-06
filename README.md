@@ -4,7 +4,9 @@ Open-source Windows backup utility inspired by Apple Time Machine.
 
 Creates incremental snapshots using NTFS hard links for space-efficient backups, with a macOS Time Machine-style 3D time browser UI.
 
-![WinMachine Screenshot](assets/screenshot1.png)
+![WinMachine Screenshot](assets/screenshot1v011.png)
+
+> **⚠️ This project is under active development but already usable.** If you find any bugs or have suggestions, feel free to [open an issue](https://github.com/KallosLaszlo/winmachine/issues) or submit a pull request — contributions are welcome!
 
 ## Features
 
