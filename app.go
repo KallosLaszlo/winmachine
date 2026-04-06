@@ -62,6 +62,15 @@ func (a *App) startup(ctx context.Context) {
 		}
 	}
 
+	// Clean up incomplete snapshots from previous runs (cancelled, crashed, app killed)
+	if a.isConfigured() {
+		if removed, err := backup.CleanIncompleteSnapshots(a.effectiveTargetDir()); err != nil {
+			log.Printf("warning: startup cleanup: %v", err)
+		} else if removed > 0 {
+			log.Printf("startup: cleaned up %d incomplete snapshot(s)", removed)
+		}
+	}
+
 	// Start the scheduler
 	if err := a.scheduler.Start(); err != nil {
 		log.Printf("warning: start scheduler: %v", err)
@@ -187,8 +196,7 @@ func (a *App) GetSnapshots() ([]*backup.SnapshotMeta, error) {
 			return nil, fmt.Errorf("mount SMB: %w", err)
 		}
 	}
-	// Clean incomplete snapshots before listing
-	backup.CleanIncompleteSnapshots(a.effectiveTargetDir())
+	// Only list finished snapshots (incomplete ones are filtered by ListSnapshots)
 	return backup.ListSnapshots(a.effectiveTargetDir())
 }
 
