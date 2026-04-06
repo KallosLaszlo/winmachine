@@ -1,18 +1,105 @@
+/* ========== Windows 11 Dark Theme (default) ========== */
 :root {
-  --bg-primary: #181820;
-  --bg-secondary: #1e1e2e;
-  --bg-tertiary: #262637;
-  --bg-hover: #2a2a3d;
-  --text-primary: #e0e0e0;
-  --text-secondary: #a0a0b0;
-  --accent: #7c5cfc;
-  --accent-hover: #9b7eff;
-  --success: #4caf84;
-  --warning: #f0a040;
-  --danger: #e05050;
-  --border: #333348;
-  --radius: 8px;
+  --bg-primary: #202020;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #383838;
+  --bg-hover: #3d3d3d;
+  --text-primary: #f5f5f5;
+  --text-secondary: #999;
+  --accent: #60cdff;
+  --accent-hover: #7dd6ff;
+  --accent-text: #000;
+  --success: #6ccb5f;
+  --warning: #fce100;
+  --danger: #ff6b6b;
+  --border: #444;
+  --radius: 6px;
   --sidebar-width: 220px;
+
+  /* Time Browser specific */
+  --tm-bg-start: #0d0d0d;
+  --tm-bg-mid: #1a1a2a;
+  --tm-bg-end: #111;
+  --tm-chrome: #2d2d2d;
+  --tm-chrome-border: #444;
+  --tm-addressbar-bg: #1a1a1a;
+  --tm-addressbar-border: #555;
+  --tm-colheader-bg: #282828;
+  --tm-colheader-border: #3a3a3a;
+  --tm-filebody-bg: #1e1e1e;
+  --tm-filerow-border: rgba(60,60,60,0.5);
+  --tm-filerow-hover: rgba(96,205,255,0.1);
+  --tm-filerow-selected: rgba(96,205,255,0.18);
+  --tm-statusbar-bg: #252525;
+  --tm-statusbar-border: #3a3a3a;
+  --tm-text: #ddd;
+  --tm-text-dim: #888;
+  --tm-text-accent: #60cdff;
+  --tm-track: rgba(96,205,255,0.2);
+  --tm-thumb: #60cdff;
+  --tm-thumb-border: #a0e0ff;
+  --tm-thumb-glow: rgba(96,205,255,0.5);
+  --tm-tick: rgba(96,205,255,0.3);
+  --tm-tick-active: #60cdff;
+  --tm-ghost: rgba(255,255,255,0.03);
+  --tm-accent-bg: rgba(96,205,255,0.12);
+  --tm-accent-border: rgba(96,205,255,0.25);
+  --tm-accent-bg-hover: rgba(96,205,255,0.3);
+  --tm-window-glow: rgba(96,205,255,0.05);
+  --tm-star-opacity: 0.35;
+}
+
+/* ========== Windows 11 Light Theme ========== */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-primary: #f3f3f3;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e8e8e8;
+    --bg-hover: #ddd;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666;
+    --accent: #005fb8;
+    --accent-hover: #0078d4;
+    --accent-text: #fff;
+    --success: #0f7b0f;
+    --warning: #9d5d00;
+    --danger: #c42b1c;
+    --border: #d1d1d1;
+    --radius: 6px;
+    --sidebar-width: 220px;
+
+    /* Time Browser specific (light) */
+    --tm-bg-start: #e0e4ef;
+    --tm-bg-mid: #c8cfe0;
+    --tm-bg-end: #d8dce8;
+    --tm-chrome: #f0f0f0;
+    --tm-chrome-border: #d1d1d1;
+    --tm-addressbar-bg: #fff;
+    --tm-addressbar-border: #c0c0c0;
+    --tm-colheader-bg: #f5f5f5;
+    --tm-colheader-border: #ddd;
+    --tm-filebody-bg: #fff;
+    --tm-filerow-border: rgba(200,200,200,0.5);
+    --tm-filerow-hover: rgba(0,95,184,0.08);
+    --tm-filerow-selected: rgba(0,95,184,0.15);
+    --tm-statusbar-bg: #f5f5f5;
+    --tm-statusbar-border: #ddd;
+    --tm-text: #1a1a1a;
+    --tm-text-dim: #666;
+    --tm-text-accent: #005fb8;
+    --tm-track: rgba(0,95,184,0.2);
+    --tm-thumb: #005fb8;
+    --tm-thumb-border: #60a5e0;
+    --tm-thumb-glow: rgba(0,95,184,0.35);
+    --tm-tick: rgba(0,95,184,0.25);
+    --tm-tick-active: #005fb8;
+    --tm-ghost: rgba(0,0,0,0.04);
+    --tm-accent-bg: rgba(0,95,184,0.08);
+    --tm-accent-border: rgba(0,95,184,0.18);
+    --tm-accent-bg-hover: rgba(0,95,184,0.2);
+    --tm-window-glow: rgba(0,95,184,0.08);
+    --tm-star-opacity: 0;
+  }
 }
 
 * {
@@ -43,7 +130,7 @@ button {
 
 button.primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-text);
 }
 button.primary:hover {
   background: var(--accent-hover);
@@ -83,5 +170,5 @@ input:focus, select:focus {
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #444;
+  background: var(--bg-hover);
 }

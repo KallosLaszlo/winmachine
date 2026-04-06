@@ -149,9 +149,9 @@ export default function TimeBrowser() {
       const target = e.target as HTMLElement;
       if (target.closest('.tm-filebody')) return;
       e.preventDefault();
-      // Scroll up (negative deltaY) = older = higher idx, scroll down = newer = lower idx
-      if (e.deltaY < 0) goSnap(activeIdx + 1);
-      else if (e.deltaY > 0) goSnap(activeIdx - 1);
+      // Scroll up (negative deltaY) = newer = lower idx, scroll down = older = higher idx
+      if (e.deltaY < 0) goSnap(activeIdx - 1);
+      else if (e.deltaY > 0) goSnap(activeIdx + 1);
     };
     page.addEventListener('wheel', onWheel, { passive: false });
     return () => page.removeEventListener('wheel', onWheel);

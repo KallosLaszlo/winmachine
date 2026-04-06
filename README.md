@@ -4,6 +4,8 @@ Open-source Windows backup utility inspired by Apple Time Machine.
 
 Creates incremental snapshots using NTFS hard links for space-efficient backups, with a macOS Time Machine-style 3D time browser UI.
 
+![WinMachine Screenshot](assets/screenshot1.png)
+
 ## Features
 
 - **Incremental snapshots** — Only changed files are copied; unchanged files are NTFS hard-linked from the previous snapshot (zero extra disk space)
@@ -115,3 +117,6 @@ MIT
 ## Author
 
 Kallos László — laszlo@kallos.dev
+
+## Tooling
+AI-assisted development was used (Claude Opus 4.6) for debugging, refactoring, and optimization.
