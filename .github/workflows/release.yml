@@ -1,0 +1,52 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.25'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Wails CLI
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: frontend
+
+      - name: Build
+        run: wails build
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: WinMachine ${{ github.ref_name }}
+          body: |
+            ## WinMachine ${{ github.ref_name }}
+
+            ### Download
+            Download `WinMachine.exe` below — no installer needed, just run it.
+
+            ### Changes
+            See commit history for details.
+          files: build/bin/WinMachine.exe
+          draft: false
+          prerelease: false
