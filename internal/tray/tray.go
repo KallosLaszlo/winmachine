@@ -1,14 +1,17 @@
 package tray
 
 import (
+	"os/exec"
+	"syscall"
+
 	"github.com/energye/systray"
 )
 
 type Callbacks struct {
-	OnOpenWindow func()
-	OnBackupNow  func()
+	OnOpenWindow  func()
+	OnBackupNow   func()
 	OnTogglePause func() bool // returns new paused state
-	OnQuit       func()
+	OnQuit        func()
 }
 
 var iconData []byte
@@ -21,6 +24,12 @@ func Run(cb Callbacks) {
 	systray.Run(func() {
 		onReady(cb)
 	}, func() {})
+}
+
+func openURL(url string) {
+	cmd := exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	cmd.Start()
 }
 
 func onReady(cb Callbacks) {
@@ -47,6 +56,10 @@ func onReady(cb Callbacks) {
 	mBackup := systray.AddMenuItem("Back Up Now", "Start a backup immediately")
 	mPause := systray.AddMenuItem("Pause Backups", "Pause automatic backups")
 	systray.AddSeparator()
+	mAbout := systray.AddMenuItem("About", "About WinMachine")
+	mWebsite := mAbout.AddSubMenuItem("Website — kallos.dev", "Open kallos.dev")
+	mGitHub := mAbout.AddSubMenuItem("GitHub", "Open project on GitHub")
+	mKofi := mAbout.AddSubMenuItem("Support (Ko-fi)", "Support on Ko-fi")
 	mQuit := systray.AddMenuItem("Quit", "Quit WinMachine")
 
 	mOpen.Click(func() {
@@ -70,6 +83,16 @@ func onReady(cb Callbacks) {
 				mPause.SetTitle("Pause Backups")
 			}
 		}
+	})
+
+	mWebsite.Click(func() {
+		openURL("https://kallos.dev")
+	})
+	mGitHub.Click(func() {
+		openURL("https://github.com/KallosLaszlo/winmachine")
+	})
+	mKofi.Click(func() {
+		openURL("https://ko-fi.com/laszlokallos")
 	})
 
 	mQuit.Click(func() {
