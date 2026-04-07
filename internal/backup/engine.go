@@ -16,14 +16,14 @@ import (
 )
 
 type BackupStatus struct {
-	Running       bool      `json:"running"`
-	LastSnapshot  string    `json:"lastSnapshot"`
-	LastTime      time.Time `json:"lastTime"`
-	Progress      float64   `json:"progress"`
-	CurrentFile   string    `json:"currentFile"`
-	FilesTotal    int       `json:"filesTotal"`
-	FilesDone     int       `json:"filesDone"`
-	Error         string    `json:"error"`
+	Running      bool      `json:"running"`
+	LastSnapshot string    `json:"lastSnapshot"`
+	LastTime     time.Time `json:"lastTime"`
+	Progress     float64   `json:"progress"`
+	CurrentFile  string    `json:"currentFile"`
+	FilesTotal   int       `json:"filesTotal"`
+	FilesDone    int       `json:"filesDone"`
+	Error        string    `json:"error"`
 }
 
 type Engine struct {
@@ -110,10 +110,8 @@ func (e *Engine) Run() error {
 			e.status.Error = fmt.Sprintf("mount SMB share: %v", err)
 			return fmt.Errorf(e.status.Error)
 		}
-		// Use the mounted drive as target
-		if targetDir == "" {
-			targetDir = sc.Drive + `\`
-		}
+		// Always use the mounted drive as target for SMB
+		targetDir = sc.Drive + `\`
 	}
 
 	if targetDir == "" {
