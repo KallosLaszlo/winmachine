@@ -124,5 +124,7 @@ MIT
 
 Kallos László — laszlo@kallos.dev
 
+[![Support me on Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-F16061?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/laszlokallos)
+
 ## Tooling
 AI-assisted development was used (Claude Opus 4.6) for debugging, refactoring, and optimization.
