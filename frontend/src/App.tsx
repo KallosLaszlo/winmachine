@@ -40,7 +40,7 @@ function App() {
           </button>
         </div>
         <div className="sidebar-footer">
-          <span className="version">v0.1.8</span>
+          <span className="version">v0.1.9</span>
         </div>
       </nav>
       <main className="content">
