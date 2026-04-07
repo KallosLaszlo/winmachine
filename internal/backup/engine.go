@@ -135,7 +135,39 @@ func (e *Engine) Run() error {
 	// Create new snapshot directory
 	snapID := NewSnapshotID()
 	snapDir := SnapshotPath(targetDir, snapID)
+
+	// Pre-check the machine snapshots root to catch problematic situations
+	machineRoot := MachineSnapshotsRoot(targetDir)
+	if info, err := os.Lstat(machineRoot); err == nil {
+		// Something exists at this path - check what it is
+		mode := info.Mode()
+		isSymlink := mode&os.ModeSymlink != 0
+		isDir := mode.IsDir()
+
+		if isSymlink {
+			// It's a symlink - this can cause mkdir issues, remove it
+			log.Printf("warning: %s is a symlink, removing to avoid issues", machineRoot)
+			if err := os.Remove(machineRoot); err != nil {
+				e.status.Error = fmt.Sprintf("cannot remove symlink at %s: %v", machineRoot, err)
+				return fmt.Errorf(e.status.Error)
+			}
+		} else if !isDir {
+			// It's a file, not a directory - remove it
+			log.Printf("warning: %s exists but is not a directory (mode: %v), removing", machineRoot, mode)
+			if err := os.Remove(machineRoot); err != nil {
+				e.status.Error = fmt.Sprintf("cannot remove conflicting file at %s: %v", machineRoot, err)
+				return fmt.Errorf(e.status.Error)
+			}
+		}
+		// If it's a real directory, that's fine - MkdirAll will handle it
+	}
+
 	if err := os.MkdirAll(snapDir, 0755); err != nil {
+		// Provide more detailed error information
+		log.Printf("error creating snapshot dir %s: %v", snapDir, err)
+		if info, statErr := os.Lstat(machineRoot); statErr == nil {
+			log.Printf("machine root %s exists: isDir=%v mode=%v", machineRoot, info.IsDir(), info.Mode())
+		}
 		e.status.Error = fmt.Sprintf("create snapshot dir: %v", err)
 		return fmt.Errorf(e.status.Error)
 	}
