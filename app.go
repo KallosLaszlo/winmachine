@@ -47,7 +47,7 @@ func NewApp() *App {
 		cfg:       cfg,
 		engine:    engine,
 		scheduler: sched,
-		smbMgr:   smbMgr,
+		smbMgr:    smbMgr,
 	}
 }
 
@@ -377,4 +377,3 @@ func isDriveInUse(drive string) bool {
 	_, err := os.Stat(drive + `\`)
 	return err == nil
 }
-
