@@ -28,6 +28,9 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
+# Docker build
+build_docker/
+
 # Config (user-specific runtime config, not source)
 %APPDATA%/WinMachine/
 todo
