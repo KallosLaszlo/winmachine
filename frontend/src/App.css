@@ -304,14 +304,14 @@
 
 /* Full-page container */
 .tm-page {
+  position: relative;
+  width: calc(100% + 64px);
   height: calc(100% + 64px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   background: linear-gradient(180deg, var(--tm-bg-start) 0%, var(--tm-bg-mid) 50%, var(--tm-bg-end) 100%);
   margin: -32px;
-  padding: 0;
-  position: relative;
 }
 
 /* Starfield / space background */
@@ -349,12 +349,12 @@
   flex: 1;
   position: relative;
   perspective: 1200px;
-  perspective-origin: 50% 95%;
+  perspective-origin: 50% 80%;
   overflow: hidden;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 0 40px 0;
+  padding: 40px 40px 0;
 }
 
 /* Each stacked "explorer window" */
@@ -362,22 +362,23 @@
   position: absolute;
   left: 40px;
   right: 40px;
-  bottom: 0;
-  height: 75%;
+  bottom: 40px;
+  height: calc(100% - 280px);
+  max-height: 550px;
   display: flex;
   flex-direction: column;
-  transform-origin: 50% 100%;
-  transition: transform 0.5s cubic-bezier(.25,.46,.45,.94), opacity 0.45s ease;
+  transform-origin: 50% 80%;
+  transition: transform 0.75s cubic-bezier(.25,.46,.45,.94), opacity 0.45s ease;
   will-change: transform, opacity;
   pointer-events: none;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 20px rgba(0,0,0,0.35);
+  box-shadow: 0 1px 10px rgba(0,0,0,0.35);
 }
 
 .tm-window.active {
   pointer-events: auto;
-  box-shadow: 0 4px 40px rgba(0,0,0,0.5), 0 0 60px var(--tm-window-glow);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 60px var(--tm-window-glow);
 }
 
 .tm-window.behind {
