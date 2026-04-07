@@ -108,7 +108,7 @@ func (e *Engine) Run() error {
 		}
 		if err := e.smbMgr.EnsureMounted(sc); err != nil {
 			e.status.Error = fmt.Sprintf("mount SMB share: %v", err)
-			return fmt.Errorf(e.status.Error)
+			return fmt.Errorf("%s", e.status.Error)
 		}
 		// Always use the mounted drive as target for SMB
 		targetDir = sc.Drive + `\`
@@ -116,12 +116,12 @@ func (e *Engine) Run() error {
 
 	if targetDir == "" {
 		e.status.Error = "no target directory configured"
-		return fmt.Errorf(e.status.Error)
+		return fmt.Errorf("%s", e.status.Error)
 	}
 
 	if len(e.cfg.SourceDirs) == 0 {
 		e.status.Error = "no source directories configured"
-		return fmt.Errorf(e.status.Error)
+		return fmt.Errorf("%s", e.status.Error)
 	}
 
 	// Get the previous snapshot for hard-link comparison
@@ -147,14 +147,14 @@ func (e *Engine) Run() error {
 			log.Printf("warning: %s is a symlink, removing to avoid issues", machineRoot)
 			if err := os.Remove(machineRoot); err != nil {
 				e.status.Error = fmt.Sprintf("cannot remove symlink at %s: %v", machineRoot, err)
-				return fmt.Errorf(e.status.Error)
+				return fmt.Errorf("%s", e.status.Error)
 			}
 		} else if !isDir {
 			// It's a file, not a directory - remove it
 			log.Printf("warning: %s exists but is not a directory (mode: %v), removing", machineRoot, mode)
 			if err := os.Remove(machineRoot); err != nil {
 				e.status.Error = fmt.Sprintf("cannot remove conflicting file at %s: %v", machineRoot, err)
-				return fmt.Errorf(e.status.Error)
+				return fmt.Errorf("%s", e.status.Error)
 			}
 		}
 		// If it's a real directory, that's fine - MkdirAll will handle it
@@ -167,7 +167,7 @@ func (e *Engine) Run() error {
 			log.Printf("machine root %s exists: isDir=%v mode=%v", machineRoot, info.IsDir(), info.Mode())
 		}
 		e.status.Error = fmt.Sprintf("create snapshot dir: %v", err)
-		return fmt.Errorf(e.status.Error)
+		return fmt.Errorf("%s", e.status.Error)
 	}
 
 	// Protect the top-level snapshots folder (hidden + ACL restricted)
