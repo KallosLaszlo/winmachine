@@ -52,6 +52,11 @@ func Prune(targetDir string, policy config.RetentionPolicy) error {
 		keep[snapshots[0].ID] = true
 	}
 
+	// Always keep the oldest snapshot (first full backup) as archive reference
+	if len(snapshots) > 0 {
+		keep[snapshots[len(snapshots)-1].ID] = true
+	}
+
 	// Delete non-kept snapshots
 	for _, s := range snapshots {
 		if !keep[s.ID] {
