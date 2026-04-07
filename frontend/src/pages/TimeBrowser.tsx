@@ -60,7 +60,7 @@ function fIcon(name: string, isDir: boolean): string {
   return '📄';
 }
 
-const VISIBLE_BEHIND = 20;  // older snapshots stacked behind active
+const VISIBLE_BEHIND = 8;  // older snapshots stacked behind active
 
 export default function TimeBrowser() {
   const [snapshots, setSnapshots] = useState<SnapshotMeta[]>([]);
@@ -72,6 +72,7 @@ export default function TimeBrowser() {
   const [mountedDrive, setMountedDrive] = useState('');
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [pendingPath, setPendingPath] = useState<string | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
 
@@ -91,9 +92,44 @@ export default function TimeBrowser() {
 
   useEffect(() => {
     if (snap) {
-      GetSnapshotFiles(snap.id, path || '.').then((f) => setFiles(f || []));
+      // If we have a pending path from snapshot switch, try to use it
+      const targetPath = pendingPath !== null ? pendingPath : path;
+      
+      GetSnapshotFiles(snap.id, targetPath || '.').then((f) => {
+        setFiles(f || []);
+        // Successfully loaded - if this was a pending path, commit it
+        if (pendingPath !== null) {
+          setPath(pendingPath);
+          setPendingPath(null);
+        }
+      }).catch(() => {
+        // Path doesn't exist in this snapshot - try fallback
+        if (targetPath) {
+          const parentPath = targetPath.split('/').slice(0, -1).join('/');
+          // Recursively try parent paths
+          const tryPath = (p: string) => {
+            GetSnapshotFiles(snap.id, p || '.').then((f) => {
+              setFiles(f || []);
+              setPath(p);
+              setPendingPath(null);
+            }).catch(() => {
+              if (p) {
+                tryPath(p.split('/').slice(0, -1).join('/'));
+              } else {
+                setFiles([]);
+                setPath('');
+                setPendingPath(null);
+              }
+            });
+          };
+          tryPath(parentPath);
+        } else {
+          setFiles([]);
+          setPendingPath(null);
+        }
+      });
     }
-  }, [snap?.id, path]);
+  }, [snap?.id, path, pendingPath]);
 
   const crumbs = useMemo(() => path ? path.split('/').filter(Boolean) : [], [path]);
 
@@ -106,10 +142,11 @@ export default function TimeBrowser() {
     const clamped = Math.max(0, Math.min(snaps.length - 1, idx));
     if (clamped === activeIdx) return;
     if (mountedDrive) UnmountSnapshot().then(() => setMountedDrive(''));
+    // Store current path for validation in new snapshot
+    setPendingPath(path);
     setActiveIdx(clamped);
-    setPath('');
     setSelectedFile(null);
-  }, [activeIdx, snaps.length, mountedDrive]);
+  }, [activeIdx, snaps.length, mountedDrive, path]);
 
   const navigate = (f: FileInfo) => {
     if (f.isDir) { setPath(f.relPath); setSelectedFile(null); }
@@ -205,10 +242,10 @@ export default function TimeBrowser() {
     const s = snaps[snapIdx];
     const isActive = offset === 0;
 
-    // Each behind card shifts UP by ~36px (just enough to show its chrome/titlebar)
+    // Each behind card shifts UP by ~28px (just enough to show its chrome/titlebar)
     // and recedes BACK with slight scale reduction — like a card deck
-    const translateY = -offset * 36;
-    const translateZ = -offset * 60;
+    const translateY = -offset * 28;
+    const translateZ = -offset * 40;
     const scale = 1 - offset * 0.012;
     const opacity = isActive ? 1 : Math.max(0.15, 0.85 - offset * 0.08);
     const blur = isActive ? 0 : Math.min(offset * 0.5, 2);
