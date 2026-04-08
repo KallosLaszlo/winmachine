@@ -1,5 +1,7 @@
 # WinMachine
 
+[![CodeQL](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml/badge.svg)](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml)
+
 Open-source Windows backup utility inspired by Apple Time Machine.
 
 Creates incremental snapshots using NTFS hard links for space-efficient backups, with a macOS Time Machine-style 3D time browser UI.
