@@ -2,6 +2,7 @@ package tray
 
 import (
 	"os/exec"
+	"runtime"
 	"syscall"
 
 	"github.com/energye/systray"
@@ -21,6 +22,12 @@ func SetIcon(data []byte) {
 }
 
 func Run(cb Callbacks) {
+	// Lock this goroutine to its OS thread so the Windows message loop
+	// (GetMessage/DispatchMessage) stays on the thread that created the
+	// notification-area window.  Without this, Go's scheduler may move
+	// the goroutine to another thread, which silently breaks
+	// TrackPopupMenu (right-click menu) — especially on auto-start.
+	runtime.LockOSThread()
 	systray.Run(func() {
 		onReady(cb)
 	}, func() {})
