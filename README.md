@@ -34,13 +34,21 @@ Creates incremental snapshots using NTFS hard links for space-efficient backups,
 | Scheduler | [robfig/cron](https://github.com/robfig/cron) |
 | Platform | Windows 10/11 (NTFS required) |
 
-## Prerequisites
+## Installation
+
+Download the latest `WinMachine.exe` from the [Releases](https://github.com/KallosLaszlo/winmachine/releases) page and run it — no installer or dependencies required. It's a single portable executable.
+
+> **Note:** Requires Windows 10/11 with an NTFS-formatted backup target drive.
+
+## Building from Source
+
+### Prerequisites
 
 - **Go** 1.25+ — [download](https://go.dev/dl/)
 - **Node.js** 18+ — [download](https://nodejs.org/)
 - **Wails CLI** v2 — installed automatically by `buildme.bat`, or manually: `go install github.com/wailsapp/wails/v2/cmd/wails@latest`
 
-## Quick Start
+### Quick Start
 
 ```bat
 git clone https://github.com/KallosLaszlo/winmachine.git
