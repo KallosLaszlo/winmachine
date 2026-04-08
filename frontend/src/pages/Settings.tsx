@@ -400,6 +400,10 @@ export default function Settings() {
       {/* Auto-start */}
       <div className="card">
         <h3>Startup</h3>
+        <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 12, background: 'rgba(255,180,0,0.1)', border: '1px solid rgba(255,180,0,0.3)', borderRadius: 6, padding: '8px 12px' }}>
+          {/* TODO: Future feature — save the current exe path in the config file and on next startup, if it has changed, automatically update the Windows registry entry */}
+          ⚠️ This is a portable application. If you move the .exe file to a different location, you must disable and re-enable this option to update the registered path in Windows.
+        </p>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
           <input
             type="checkbox"
