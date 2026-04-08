@@ -44,9 +44,7 @@ jobs:
 
             ### Download
             Download `WinMachine.exe` below — no installer needed, just run it.
-
-            ### Changes
-            See commit history for details.
+          generate_release_notes: true
           files: build/bin/WinMachine.exe
           draft: false
           prerelease: false
