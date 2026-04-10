@@ -6,9 +6,9 @@
 
 Built with [Go](https://go.dev/) + [Wails](https://wails.io/) + [React](https://react.dev())
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![CodeQL](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml/badge.svg?style=for-the-badge)](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml)
-[![Support me on Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-F16061?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/laszlokallos)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CodeQL](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml/badge.svg)](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml)
+[![Support me on Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-F16061?logo=ko-fi&logoColor=white)](https://ko-fi.com/laszlokallos)
 
 </div>
 
