@@ -1,14 +1,24 @@
+<div align="center">
+
 # WinMachine
 
-[![CodeQL](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml/badge.svg)](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml)
+**Windows Time Machine — open-source backup utility with NTFS hard-link snapshots, 3D time browser UI, SMB support, and system tray integration.**
 
-Open-source Windows backup utility inspired by Apple Time Machine.
+Built with [Go](https://go.dev/) + [Wails](https://wails.io/) + [React](https://react.dev())
 
-Creates incremental snapshots using NTFS hard links for space-efficient backups, with a macOS Time Machine-style 3D time browser UI.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![CodeQL](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml/badge.svg?style=for-the-badge)](https://github.com/KallosLaszlo/winmachine/actions/workflows/codeql.yml)
+[![Support me on Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-F16061?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/laszlokallos)
 
-![WinMachine Screenshot](assets/screenshot1v011.png)
+</div>
+
+---
 
 > **⚠️ This project is under active development but already usable.** If you find any bugs or have suggestions, feel free to [open an issue](https://github.com/KallosLaszlo/winmachine/issues) or submit a pull request — contributions are welcome!
+
+---
+
+![WinMachine Screenshot](assets/screenshot1v011.png)
 
 ## Features
 
@@ -133,12 +143,6 @@ MIT
 ## Author
 
 Kallos László — laszlo@kallos.dev
-
-## Support the Project
-
-If you find this tool useful and want to support its further development, feel free to buy me a coffee!
-
-[![Support me on Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-F16061?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/laszlokallos)
 
 ## Tooling
 AI-assisted development was used (Claude Opus 4.6) for debugging, refactoring, and optimization.
