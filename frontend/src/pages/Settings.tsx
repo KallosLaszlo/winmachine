@@ -35,6 +35,7 @@ interface Config {
   retention: RetentionPolicy;
   autoStart: boolean;
   excludePatterns: string[];
+  stackBehindOffset: number;
 }
 
 const scheduleOptions = [
@@ -396,6 +397,26 @@ export default function Settings() {
           <button className="secondary" onClick={addExcludePattern}>Add</button>
         </div>
       </div>
+
+      {/* Appearance — hidden from UI, value stored in config.json
+      <div className="card">
+        <h3>Appearance</h3>
+        <div className="form-row">
+          <label>Time Browser — behind stack offset: <strong>{cfg.stackBehindOffset ?? 5}%</strong></label>
+          <input
+            type="range"
+            min={1}
+            max={20}
+            value={cfg.stackBehindOffset ?? 5}
+            onChange={(e) => save({ ...cfg, stackBehindOffset: Number(e.target.value) })}
+            style={{ width: '100%', accentColor: 'var(--accent)' }}
+          />
+          <p style={{ fontSize: 11, color: 'var(--text-secondary)', margin: '4px 0 0' }}>
+            Controls how much of the behind windows peek above the active window (1–20% of stage height per layer).
+          </p>
+        </div>
+      </div>
+      */}
 
       {/* Auto-start */}
       <div className="card">

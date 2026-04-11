@@ -7,6 +7,7 @@ import {
   MountSnapshot,
   UnmountSnapshot,
   GetMountedSnapshot,
+  GetConfig,
 } from '../../wailsjs/go/main/App';
 
 interface SnapshotMeta {
@@ -75,19 +76,33 @@ export default function TimeBrowser() {
   const [pendingPath, setPendingPath] = useState<string | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [stackBehindOffset, setStackBehindOffset] = useState(5);
+  const [stageH, setStageH] = useState(0);
 
   // Snapshots are stored oldest-first. Reverse so index 0 = newest.
   const snaps = useMemo(() => [...snapshots].reverse(), [snapshots]);
   const snap = snaps[activeIdx] ?? null;
 
   useEffect(() => {
+    GetConfig().then((c: any) => {
+      if (c?.stackBehindOffset) setStackBehindOffset(c.stackBehindOffset);
+    });
     GetSnapshots().then((s) => {
       setSnapshots(s || []);
       // Start at newest snapshot (highest index after reverse)
       if (s && s.length > 0) setActiveIdx(s.length - 1);
     });
     GetMountedSnapshot().then((d) => setMountedDrive(d || ''));
-    return () => { UnmountSnapshot(); };
+
+    const updateStageH = () => {
+      if (stageRef.current) setStageH(stageRef.current.clientHeight);
+    };
+    const obs = new ResizeObserver(updateStageH);
+    if (stageRef.current) obs.observe(stageRef.current);
+    window.addEventListener('resize', updateStageH);
+
+    return () => { UnmountSnapshot(); obs.disconnect(); window.removeEventListener('resize', updateStageH); };
   }, []);
 
   useEffect(() => {
@@ -242,9 +257,9 @@ export default function TimeBrowser() {
     const s = snaps[snapIdx];
     const isActive = offset === 0;
 
-    // Each behind card shifts UP by ~28px (just enough to show its chrome/titlebar)
-    // and recedes BACK with slight scale reduction — like a card deck
-    const translateY = -offset * 28;
+    // Each behind card shifts UP by stackBehindOffset% of the stage height
+    const h = stageH > 0 ? stageH : (stageRef.current?.clientHeight ?? window.innerHeight);
+    const translateY = -offset * (stackBehindOffset / 100) * h;
     const translateZ = -offset * 40;
     const scale = 1 - offset * 0.012;
     const opacity = isActive ? 1 : Math.max(0.15, 0.85 - offset * 0.08);
@@ -373,7 +388,7 @@ export default function TimeBrowser() {
       {/* Main area */}
       <div className="tm-main">
         {/* 3D Stage */}
-        <div className="tm-stage">
+        <div className="tm-stage" ref={stageRef}>
           {stack}
         </div>
 
