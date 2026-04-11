@@ -79,3 +79,4 @@ jobs:
           files: build/bin/WinMachine.exe
           draft: false
           prerelease: false
+          generate_release_notes: true
