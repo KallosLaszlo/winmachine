@@ -362,9 +362,10 @@
   position: absolute;
   left: 40px;
   right: 40px;
-  bottom: 40px;
-  height: calc(100% - 280px);
-  max-height: 550px;
+  bottom: 30px;
+  /* height: calc(100% - 180px); */
+  height: calc(100% - 25%);
+  /*max-height: 550px;*/
   display: flex;
   flex-direction: column;
   transform-origin: 50% 80%;
