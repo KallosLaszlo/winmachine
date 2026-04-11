@@ -3,27 +3,27 @@ import './App.css';
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
 import TimeBrowser from './pages/TimeBrowser';
-import EULAModal from './components/EULAModal';
-import { IsEULAAccepted } from '../wailsjs/go/main/App';
+import DisclaimerModal from './components/DisclaimerModal';
+import { IsDisclaimerAccepted } from '../wailsjs/go/main/App';
 
 type Page = 'dashboard' | 'timebrowser' | 'settings';
 
 function App() {
   const [page, setPage] = useState<Page>('dashboard');
-  const [eulaChecked, setEulaChecked] = useState(false);
-  const [eulaAccepted, setEulaAccepted] = useState(true); // optimistic: hide modal until check done
+  const [disclaimerChecked, setDisclaimerChecked] = useState(false);
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(true); // optimistic: hide modal until check done
 
   useEffect(() => {
-    IsEULAAccepted().then((accepted) => {
-      setEulaAccepted(accepted);
-      setEulaChecked(true);
+    IsDisclaimerAccepted().then((accepted) => {
+      setDisclaimerAccepted(accepted);
+      setDisclaimerChecked(true);
     });
   }, []);
 
-  if (!eulaChecked) return null;
+  if (!disclaimerChecked) return null;
 
-  if (!eulaAccepted) {
-    return <EULAModal onAccepted={() => setEulaAccepted(true)} />;
+  if (!disclaimerAccepted) {
+    return <DisclaimerModal onAccepted={() => setDisclaimerAccepted(true)} />;
   }
 
   return (

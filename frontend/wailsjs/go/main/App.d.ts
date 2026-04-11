@@ -3,11 +3,11 @@
 import {backup} from '../models';
 import {config} from '../models';
 
-export function AcceptEULA():Promise<void>;
+export function AcceptDisclaimer():Promise<void>;
 
 export function CancelBackup():Promise<string>;
 
-export function DeclineEULA():Promise<void>;
+export function DeclineDisclaimer():Promise<void>;
 
 export function GetAvailableDrives():Promise<Array<string>>;
 
@@ -15,9 +15,9 @@ export function GetBackupStatus():Promise<backup.BackupStatus>;
 
 export function GetConfig():Promise<config.Config>;
 
-export function GetDiskInfo(arg1:string):Promise<Record<string, any>>;
+export function GetDisclaimerText():Promise<string>;
 
-export function GetEULAText():Promise<string>;
+export function GetDiskInfo(arg1:string):Promise<Record<string, any>>;
 
 export function GetMachineID():Promise<string>;
 
@@ -31,7 +31,7 @@ export function GetSnapshots():Promise<Array<backup.SnapshotMeta>>;
 
 export function IsAutoStartEnabled():Promise<boolean>;
 
-export function IsEULAAccepted():Promise<boolean>;
+export function IsDisclaimerAccepted():Promise<boolean>;
 
 export function MountSnapshot(arg1:string):Promise<string>;
 

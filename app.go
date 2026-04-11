@@ -378,9 +378,9 @@ func isDriveInUse(drive string) bool {
 	return err == nil
 }
 
-// GetEULAText reads DISCLAIMER.md from the directory containing the executable.
+// GetDisclaimerText reads DISCLAIMER.md from the directory containing the executable.
 // Falls back to the project root when running under wails dev.
-func (a *App) GetEULAText() string {
+func (a *App) GetDisclaimerText() string {
 	candidates := []string{}
 
 	// 1. next to the running executable (production)
@@ -400,19 +400,19 @@ func (a *App) GetEULAText() string {
 	return "Disclaimer text not found. Please locate DISCLAIMER.md next to the application executable."
 }
 
-// IsEULAAccepted returns whether the user has accepted the EULA.
-func (a *App) IsEULAAccepted() bool {
+// IsDisclaimerAccepted returns whether the user has accepted the disclaimer.
+func (a *App) IsDisclaimerAccepted() bool {
 	return a.cfg.DisclaimerAccepted
 }
 
-// AcceptEULA marks the EULA as accepted and persists it to config.
-func (a *App) AcceptEULA() error {
+// AcceptDisclaimer marks the disclaimer as accepted and persists it to config.
+func (a *App) AcceptDisclaimer() error {
 	a.cfg.DisclaimerAccepted = true
 	return a.cfg.Save()
 }
 
-// DeclineEULA quits the application completely (tray included).
-func (a *App) DeclineEULA() {
+// DeclineDisclaimer quits the application completely (tray included).
+func (a *App) DeclineDisclaimer() {
 	a.quitting = true
 	tray.Quit()
 	wailsRuntime.Quit(a.ctx)

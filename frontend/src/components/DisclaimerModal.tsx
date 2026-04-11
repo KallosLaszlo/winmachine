@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AcceptEULA, DeclineEULA, GetEULAText } from '../../wailsjs/go/main/App';
+import { AcceptDisclaimer, DeclineDisclaimer, GetDisclaimerText } from '../../wailsjs/go/main/App';
 
 interface Props {
   onAccepted: () => void;
@@ -46,39 +46,39 @@ function renderMarkdown(md: string): React.ReactNode[] {
   return nodes;
 }
 
-export default function EULAModal({ onAccepted }: Props) {
+export default function DisclaimerModal({ onAccepted }: Props) {
   const [text, setText] = useState('Loading...');
   const [accepting, setAccepting] = useState(false);
 
   useEffect(() => {
-    GetEULAText().then((t) => setText(t));
+    GetDisclaimerText().then((t) => setText(t));
   }, []);
 
   const handleAccept = async () => {
     setAccepting(true);
-    await AcceptEULA();
+    await AcceptDisclaimer();
     onAccepted();
   };
 
   const handleDecline = () => {
-    DeclineEULA();
+    DeclineDisclaimer();
   };
 
   return (
-    <div className="eula-overlay">
-      <div className="eula-dialog">
-        <div className="eula-header">
-          <span className="eula-icon">⚠️</span>
+    <div className="disclaimer-overlay">
+      <div className="disclaimer-dialog">
+        <div className="disclaimer-header">
+          <span className="disclaimer-icon">⚠️</span>
           <h2>Disclaimer</h2>
         </div>
-        <div className="eula-body">
-          <div className="eula-text">{renderMarkdown(text)}</div>
+        <div className="disclaimer-body">
+          <div className="disclaimer-text">{renderMarkdown(text)}</div>
         </div>
-        <div className="eula-footer">
-          <button className="eula-btn decline" onClick={handleDecline}>
+        <div className="disclaimer-footer">
+          <button className="disclaimer-btn decline" onClick={handleDecline}>
             Decline
           </button>
-          <button className="eula-btn accept" onClick={handleAccept} disabled={accepting}>
+          <button className="disclaimer-btn accept" onClick={handleAccept} disabled={accepting}>
             {accepting ? 'Please wait…' : 'Accept'}
           </button>
         </div>

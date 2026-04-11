@@ -828,10 +828,10 @@
 .tm-empty-state p { font-size: 14px; }
 
 /* ============================================================
-   EULA MODAL
+   DISCLAIMER MODAL
    ============================================================ */
 
-.eula-overlay {
+.disclaimer-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
@@ -842,7 +842,7 @@
   backdrop-filter: blur(4px);
 }
 
-.eula-dialog {
+.disclaimer-dialog {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -854,7 +854,7 @@
   overflow: hidden;
 }
 
-.eula-header {
+.disclaimer-header {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -863,24 +863,24 @@
   flex-shrink: 0;
 }
 
-.eula-icon {
+.disclaimer-icon {
   font-size: 24px;
 }
 
-.eula-header h2 {
+.disclaimer-header h2 {
   margin: 0;
   font-size: 17px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-.eula-body {
+.disclaimer-body {
   flex: 1;
   overflow-y: auto;
   padding: 20px 24px;
 }
 
-.eula-text {
+.disclaimer-text {
   font-family: inherit;
   font-size: 12px;
   line-height: 1.7;
@@ -888,15 +888,15 @@
   white-space: pre-wrap;
   margin: 0;
 }
-.eula-text ul {
+.disclaimer-text ul {
   padding-left: 20px;
   margin: 0;
 }
-.eula-text li {
+.disclaimer-text li {
   margin-bottom: 2px;
 }
 
-.eula-footer {
+.disclaimer-footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -905,7 +905,7 @@
   flex-shrink: 0;
 }
 
-.eula-btn {
+.disclaimer-btn {
   padding: 8px 28px;
   border-radius: var(--radius);
   font-size: 13px;
@@ -916,24 +916,24 @@
   transition: all 0.15s;
 }
 
-.eula-btn.decline {
+.disclaimer-btn.decline {
   background: var(--bg-tertiary);
   color: var(--text-secondary);
   border: 1px solid var(--border);
 }
-.eula-btn.decline:hover {
+.disclaimer-btn.decline:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
 }
 
-.eula-btn.accept {
+.disclaimer-btn.accept {
   background: var(--accent);
   color: var(--accent-text);
 }
-.eula-btn.accept:hover:not(:disabled) {
+.disclaimer-btn.accept:hover:not(:disabled) {
   background: var(--accent-hover);
 }
-.eula-btn.accept:disabled {
+.disclaimer-btn.accept:disabled {
   opacity: 0.5;
   cursor: default;
 }
