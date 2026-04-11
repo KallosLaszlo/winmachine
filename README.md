@@ -6,10 +6,10 @@
 
 Built with [Go](https://go.dev/) + [Wails](https://wails.io/) + [React](https://react.dev/)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![Support me on Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-F16061?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/laszlokallos)
-[![GitHub release](https://img.shields.io/github/v/release/KallosLaszlo/winmachine?style=for-the-badge&label=Latest)](https://github.com/KallosLaszlo/winmachine/releases)
-[![GitHub Downloads](https://img.shields.io/github/downloads/KallosLaszlo/winmachine/total?style=for-the-badge&label=Downloads)](https://github.com/KallosLaszlo/winmachine/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Support me on Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-F16061?logo=ko-fi&logoColor=white&style=flat-square)](https://ko-fi.com/laszlokallos)
+[![GitHub release](https://img.shields.io/github/v/release/KallosLaszlo/winmachine?style=flat-square&label=Latest)](https://github.com/KallosLaszlo/winmachine/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/KallosLaszlo/winmachine/total?style=flat-square&label=Downloads)](https://github.com/KallosLaszlo/winmachine/releases)
 
 </div>
 
