@@ -21,6 +21,11 @@ func SetIcon(data []byte) {
 	iconData = data
 }
 
+// Quit stops the system tray icon and its event loop.
+func Quit() {
+	systray.Quit()
+}
+
 func Run(cb Callbacks) {
 	// Lock this goroutine to its OS thread so the Windows message loop
 	// (GetMessage/DispatchMessage) stays on the thread that created the

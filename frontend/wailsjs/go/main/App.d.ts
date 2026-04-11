@@ -3,13 +3,19 @@
 import {backup} from '../models';
 import {config} from '../models';
 
+export function AcceptDisclaimer():Promise<void>;
+
 export function CancelBackup():Promise<string>;
+
+export function DeclineDisclaimer():Promise<void>;
 
 export function GetAvailableDrives():Promise<Array<string>>;
 
 export function GetBackupStatus():Promise<backup.BackupStatus>;
 
 export function GetConfig():Promise<config.Config>;
+
+export function GetDisclaimerText():Promise<string>;
 
 export function GetDiskInfo(arg1:string):Promise<Record<string, any>>;
 
@@ -24,6 +30,8 @@ export function GetSnapshotFiles(arg1:string,arg2:string):Promise<Array<backup.F
 export function GetSnapshots():Promise<Array<backup.SnapshotMeta>>;
 
 export function IsAutoStartEnabled():Promise<boolean>;
+
+export function IsDisclaimerAccepted():Promise<boolean>;
 
 export function MountSnapshot(arg1:string):Promise<string>;
 

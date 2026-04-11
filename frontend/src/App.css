@@ -362,9 +362,10 @@
   position: absolute;
   left: 40px;
   right: 40px;
-  bottom: 40px;
-  height: calc(100% - 280px);
-  max-height: 550px;
+  bottom: 30px;
+  /* height: calc(100% - 180px); */
+  height: calc(100% - 25%);
+  /*max-height: 550px;*/
   display: flex;
   flex-direction: column;
   transform-origin: 50% 80%;
@@ -825,3 +826,114 @@
 }
 .tm-empty-state .icon { font-size: 48px; opacity: 0.4; }
 .tm-empty-state p { font-size: 14px; }
+
+/* ============================================================
+   DISCLAIMER MODAL
+   ============================================================ */
+
+.disclaimer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.disclaimer-dialog {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: min(680px, 90vw);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.disclaimer-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.disclaimer-icon {
+  font-size: 24px;
+}
+
+.disclaimer-header h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.disclaimer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.disclaimer-text {
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  margin: 0;
+}
+.disclaimer-text ul {
+  padding-left: 20px;
+  margin: 0;
+}
+.disclaimer-text li {
+  margin-bottom: 2px;
+}
+
+.disclaimer-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.disclaimer-btn {
+  padding: 8px 28px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.disclaimer-btn.decline {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.disclaimer-btn.decline:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.disclaimer-btn.accept {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+.disclaimer-btn.accept:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.disclaimer-btn.accept:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

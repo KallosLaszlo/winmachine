@@ -168,6 +168,8 @@ export namespace config {
 	    retention: RetentionPolicy;
 	    autoStart: boolean;
 	    excludePatterns: string[];
+	    stackBehindOffset: number;
+	    disclaimerAccepted: boolean;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -183,6 +185,8 @@ export namespace config {
 	        this.retention = this.convertValues(source["retention"], RetentionPolicy);
 	        this.autoStart = source["autoStart"];
 	        this.excludePatterns = source["excludePatterns"];
+	        this.stackBehindOffset = source["stackBehindOffset"];
+	        this.disclaimerAccepted = source["disclaimerAccepted"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
