@@ -35,6 +35,33 @@ jobs:
       - name: Build
         run: wails build
 
+      - name: Upload unsigned exe for signing
+        uses: actions/upload-artifact@v4
+        id: upload-unsigned
+        with:
+          name: WinMachine-unsigned
+          path: build/bin/WinMachine.exe
+
+      - name: Sign executable (SignPath.io)
+        uses: signpath/github-action-submit-signing-request@v1
+        id: sign-process
+        with:
+          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+          organization-id: '${{ secrets.SIGNPATH_ORGANIZATION_ID }}'
+          project-slug: 'WinMachine'
+          signing-policy-slug: 'release-signing'
+          artifact-configuration-slug: 'exe'
+          github-artifact-id: '${{ steps.upload-unsigned.outputs.artifact-id }}'
+          wait-for-completion: true
+          output-artifact-directory: 'signed-output'
+
+      - name: Download signed artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: signed-artifact
+          path: build/bin
+          merge-multiple: true
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -47,6 +74,8 @@ jobs:
 
             ### Changes
             See commit history for details.
+
+            *This version is digitally signed.*
           files: build/bin/WinMachine.exe
           draft: false
           prerelease: false
