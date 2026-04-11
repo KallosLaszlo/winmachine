@@ -377,3 +377,43 @@ func isDriveInUse(drive string) bool {
 	_, err := os.Stat(drive + `\`)
 	return err == nil
 }
+
+// GetEULAText reads DISCLAIMER.md from the directory containing the executable.
+// Falls back to the project root when running under wails dev.
+func (a *App) GetEULAText() string {
+	candidates := []string{}
+
+	// 1. next to the running executable (production)
+	if exe, err := os.Executable(); err == nil {
+		candidates = append(candidates, filepath.Join(filepath.Dir(exe), "DISCLAIMER.md"))
+	}
+	// 2. current working directory (wails dev)
+	if cwd, err := os.Getwd(); err == nil {
+		candidates = append(candidates, filepath.Join(cwd, "DISCLAIMER.md"))
+	}
+
+	for _, p := range candidates {
+		if data, err := os.ReadFile(p); err == nil {
+			return string(data)
+		}
+	}
+	return "Disclaimer text not found. Please locate DISCLAIMER.md next to the application executable."
+}
+
+// IsEULAAccepted returns whether the user has accepted the EULA.
+func (a *App) IsEULAAccepted() bool {
+	return a.cfg.DisclaimerAccepted
+}
+
+// AcceptEULA marks the EULA as accepted and persists it to config.
+func (a *App) AcceptEULA() error {
+	a.cfg.DisclaimerAccepted = true
+	return a.cfg.Save()
+}
+
+// DeclineEULA quits the application completely (tray included).
+func (a *App) DeclineEULA() {
+	a.quitting = true
+	tray.Quit()
+	wailsRuntime.Quit(a.ctx)
+}

@@ -1,13 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
 import TimeBrowser from './pages/TimeBrowser';
+import EULAModal from './components/EULAModal';
+import { IsEULAAccepted } from '../wailsjs/go/main/App';
 
 type Page = 'dashboard' | 'timebrowser' | 'settings';
 
 function App() {
   const [page, setPage] = useState<Page>('dashboard');
+  const [eulaChecked, setEulaChecked] = useState(false);
+  const [eulaAccepted, setEulaAccepted] = useState(true); // optimistic: hide modal until check done
+
+  useEffect(() => {
+    IsEULAAccepted().then((accepted) => {
+      setEulaAccepted(accepted);
+      setEulaChecked(true);
+    });
+  }, []);
+
+  if (!eulaChecked) return null;
+
+  if (!eulaAccepted) {
+    return <EULAModal onAccepted={() => setEulaAccepted(true)} />;
+  }
 
   return (
     <div className="app-layout">

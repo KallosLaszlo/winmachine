@@ -29,18 +29,18 @@ type SMBShareConfig struct {
 }
 
 type Config struct {
-	SourceDirs        []string        `json:"sourceDirs"`
-	TargetDir         string          `json:"targetDir"`
-	TargetType        string          `json:"targetType"` // "local" or "smb"
-	SMBTarget         SMBShareConfig  `json:"smbTarget"`
-	ScheduleInterval  string          `json:"scheduleInterval"`
-	Retention         RetentionPolicy `json:"retention"`
-	AutoStart         bool            `json:"autoStart"`
-	ExcludePatterns   []string        `json:"excludePatterns"`
-	StackBehindOffset int             `json:"stackBehindOffset"` // % of stage height per behind layer (1-20)
-
-	mu   sync.RWMutex `json:"-"`
-	path string       `json:"-"`
+	SourceDirs         []string        `json:"sourceDirs"`
+	TargetDir          string          `json:"targetDir"`
+	TargetType         string          `json:"targetType"` // "local" or "smb"
+	SMBTarget          SMBShareConfig  `json:"smbTarget"`
+	ScheduleInterval   string          `json:"scheduleInterval"`
+	Retention          RetentionPolicy `json:"retention"`
+	AutoStart          bool            `json:"autoStart"`
+	ExcludePatterns    []string        `json:"excludePatterns"`
+	StackBehindOffset  int             `json:"stackBehindOffset"` // % of stage height per behind layer (1-20)
+	DisclaimerAccepted bool            `json:"disclaimerAccepted"`
+	mu                 sync.RWMutex    `json:"-"`
+	path               string          `json:"-"`
 }
 
 func DefaultConfig() *Config {
@@ -56,9 +56,10 @@ func DefaultConfig() *Config {
 			WeeklyForWeeks:   4,
 			MonthlyForMonths: 12,
 		},
-		AutoStart:         false,
-		ExcludePatterns:   []string{"*.tmp", "~$*", "Thumbs.db", "desktop.ini", ".git", "node_modules"},
-		StackBehindOffset: 5,
+		AutoStart:          false,
+		ExcludePatterns:    []string{"*.tmp", "~$*", "Thumbs.db", "desktop.ini", ".git", "node_modules"},
+		StackBehindOffset:  5,
+		DisclaimerAccepted: false,
 	}
 }
 
